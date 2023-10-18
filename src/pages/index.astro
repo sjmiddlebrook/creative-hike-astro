@@ -1,0 +1,29 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '@layouts/Layout.astro';
+import PostPreview from '@components/Posts/PostPreview.astro';
+
+const posts = (await getCollection('posts')).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const latestFive = posts.slice(0, 5);
+---
+
+<Layout>
+  <div class="flex max-w-xl flex-col space-y-12">
+    {
+      latestFive.map((post) => (
+        <PostPreview
+          title={post.data.title}
+          slug={post.slug}
+          description={post.data.description}
+          date={post.data.pubDate}
+        />
+      ))
+    }
+  </div>
+  <div class="py-6">
+    <a href="/posts" class="text-sm font-semibold leading-6 text-teal-600 hover:underline">View All Posts <span aria-hidden="true">&rarr;</span></a>
+
+  </div>
+</Layout>

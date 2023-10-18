@@ -1,0 +1,29 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '@layouts/Layout.astro';
+import PostPreview from '@components/Posts/PostPreview.astro';
+
+const posts = (await getCollection('posts')).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<Layout>
+  <h1
+    class="text-3xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100"
+  >
+    Posts
+  </h1>
+  <div class="pt-8 flex max-w-xl flex-col space-y-12">
+    {
+      posts.map((post) => (
+        <PostPreview
+          title={post.data.title}
+          slug={post.slug}
+          description={post.data.description}
+          date={post.data.pubDate}
+        />
+      ))
+    }
+  </div>
+</Layout>
