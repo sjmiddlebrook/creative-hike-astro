@@ -1,0 +1,18 @@
+---
+import Layout from '@layouts/Layout.astro';
+import OgSite from '@utils/og-templates/site';
+import FourOhFour from './404.astro';
+const isDevMode = import.meta.env.DEV;
+---
+
+{
+  isDevMode ? (
+    <Layout>
+      <div class="h-[630px] w-[1200px] border ">
+        <OgSite />
+      </div>
+    </Layout>
+  ) : (
+    <FourOhFour />
+  )
+}

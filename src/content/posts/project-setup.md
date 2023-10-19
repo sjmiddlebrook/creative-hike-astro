@@ -2,7 +2,8 @@
 title: 'Project Setup'
 description: 'Getting started with a new project'
 pubDate: '2023-10-18'
-tags: ['project-start']
+draft: false
+tags: ['project-start', 'dev']
 ---
 
 Getting a repo setup before you start a project.

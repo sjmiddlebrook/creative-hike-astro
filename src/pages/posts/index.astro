@@ -1,11 +1,9 @@
 ---
-import { getCollection } from 'astro:content';
 import Layout from '@layouts/Layout.astro';
 import PostPreview from '@components/Posts/PostPreview.astro';
+import { getPosts } from '@utils/post-utils';
 
-const posts = (await getCollection('posts')).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+const posts = await getPosts();
 ---
 
 <Layout>

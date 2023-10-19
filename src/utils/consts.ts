@@ -3,3 +3,4 @@
 
 export const SITE_TITLE = 'Creative Hike';
 export const SITE_DESCRIPTION = 'Work in progress';
+export const SITE_URL = 'https://creativehike.com';
