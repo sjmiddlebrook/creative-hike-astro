@@ -17,6 +17,10 @@ const fetchFonts = async () => {
   );
   const fontBold: ArrayBuffer = await fontFileBold.arrayBuffer();
 
+  // const fontUrl = 'https://creativehike.com/fonts/JetBrainsMono-Bold.ttf';
+  // const font = await fetch(fontUrl);
+  // const fontJetBrains = await font.arrayBuffer();
+
   return { fontRegular, fontBold };
 };
 
@@ -39,6 +43,11 @@ const options: SatoriOptions = {
       weight: 600,
       style: 'normal',
     },
+    // {
+    //   name: 'JetBrains Mono',
+    //   data: fontJetBrains,
+    //   style: 'normal',
+    // },
   ],
 };
 
