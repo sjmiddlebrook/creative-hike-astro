@@ -4,27 +4,22 @@ import { type CollectionEntry } from 'astro:content';
 import postOgImage from './og-templates/post';
 import siteOgImage from './og-templates/site';
 
-const fetchFonts = async () => {
-  // Regular Font
-  const fontFileRegular = await fetch(
-    'https://www.1001fonts.com/download/font/ibm-plex-mono.regular.ttf',
-  );
-  const fontRegular: ArrayBuffer = await fontFileRegular.arrayBuffer();
-
-  // Bold Font
-  const fontFileBold = await fetch(
-    'https://www.1001fonts.com/download/font/ibm-plex-mono.bold.ttf',
-  );
-  const fontBold: ArrayBuffer = await fontFileBold.arrayBuffer();
-
-  // const fontUrl = 'https://creativehike.com/fonts/JetBrainsMono-Bold.ttf';
-  // const font = await fetch(fontUrl);
-  // const fontJetBrains = await font.arrayBuffer();
-
-  return { fontRegular, fontBold };
+async function fetchFonts() {
+  const fontNormalUrl =
+    'https://creativehike.com/fonts/JetBrainsMono-Regular.ttf';
+  const fontBoldUrl = 'https://creativehike.com/fonts/JetBrainsMono-Bold.ttf';
+  const [fontNormalRes, fontBoldRes] = await Promise.all([
+    fetch(fontNormalUrl),
+    fetch(fontBoldUrl),
+  ]);
+  const [fontNormal, fontBold] = await Promise.all([
+    fontNormalRes.arrayBuffer(),
+    fontBoldRes.arrayBuffer(),
+  ]);
+  return { fontNormal, fontBold };
 };
 
-const { fontRegular, fontBold } = await fetchFonts();
+const { fontNormal, fontBold } = await fetchFonts();
 
 const options: SatoriOptions = {
   width: 1200,
@@ -32,22 +27,17 @@ const options: SatoriOptions = {
   embedFont: true,
   fonts: [
     {
-      name: 'IBM Plex Mono',
-      data: fontRegular,
+      name: 'JetBrains Mono',
+      data: fontNormal,
       weight: 400,
       style: 'normal',
     },
     {
-      name: 'IBM Plex Mono',
+      name: 'JetBrains Mono',
       data: fontBold,
-      weight: 600,
+      weight: 700,
       style: 'normal',
     },
-    // {
-    //   name: 'JetBrains Mono',
-    //   data: fontJetBrains,
-    //   style: 'normal',
-    // },
   ],
 };
 
