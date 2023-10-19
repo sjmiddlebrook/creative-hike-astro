@@ -1,4 +1,4 @@
-import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL } from '../consts';
+import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL } from '@utils/consts';
 
 export default () => {
   return (

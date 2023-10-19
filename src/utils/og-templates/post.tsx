@@ -1,4 +1,4 @@
-import { SITE_TITLE } from "../consts";
+import { SITE_TITLE } from "@utils/consts";
 import type { CollectionEntry } from "astro:content";
 
 export default (post: CollectionEntry<"posts">) => {
