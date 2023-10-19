@@ -1,6 +1,6 @@
+import type { CollectionEntry } from 'astro:content';
 import satori, { type SatoriOptions } from 'satori';
 import { Resvg } from '@resvg/resvg-js';
-import { type CollectionEntry } from 'astro:content';
 import postOgImage from './og-templates/post';
 import siteOgImage from './og-templates/site';
 
@@ -17,29 +17,34 @@ async function fetchFonts() {
     fontBoldRes.arrayBuffer(),
   ]);
   return { fontNormal, fontBold };
-};
+}
 
-const { fontNormal, fontBold } = await fetchFonts();
+async function getOptions(): Promise<SatoriOptions> {
+  const { fontNormal, fontBold } = await fetchFonts();
 
-const options: SatoriOptions = {
-  width: 1200,
-  height: 630,
-  embedFont: true,
-  fonts: [
-    {
-      name: 'JetBrains Mono',
-      data: fontNormal,
-      weight: 400,
-      style: 'normal',
-    },
-    {
-      name: 'JetBrains Mono',
-      data: fontBold,
-      weight: 700,
-      style: 'normal',
-    },
-  ],
-};
+  const options: SatoriOptions = {
+    width: 1200,
+    height: 630,
+    embedFont: true,
+    fonts: [
+      {
+        name: 'JetBrains Mono',
+        data: fontNormal,
+        weight: 400,
+        style: 'normal',
+      },
+      {
+        name: 'JetBrains Mono',
+        data: fontBold,
+        weight: 700,
+        style: 'normal',
+      },
+    ],
+  };
+  return options;
+}
+
+const options = await getOptions();
 
 function svgBufferToPngBuffer(svg: string) {
   const resvg = new Resvg(svg);

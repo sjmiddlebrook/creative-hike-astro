@@ -1,6 +1,6 @@
 import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL } from '@utils/consts';
 
-export default () => {
+export default function OGSiteTemplate() {
   return (
     <div
       style={{

@@ -2,12 +2,13 @@
 import type { CollectionEntry } from 'astro:content';
 import Layout from './Layout.astro';
 
-type Props = CollectionEntry<'posts'>['data'];
+type Props = CollectionEntry<'posts'>['data'] & { slug: string };
 
-const { title, description, pubDate, heroImage } = Astro.props;
+let { title, description, pubDate, slug, ogImage } = Astro.props;
+ogImage = ogImage || `/${slug}/og.png`;
 ---
 
-<Layout title={title} description={description} image={heroImage}>
+<Layout title={title} description={description} image={ogImage}>
   <div class="max-w-4xl">
     <a
       href="/"
@@ -46,7 +47,7 @@ const { title, description, pubDate, heroImage } = Astro.props;
           ></time
         >
       </header>
-      <div class="prose dark:prose-invert mt-8"><slot /></div>
+      <div class="prose mt-8 dark:prose-invert"><slot /></div>
     </article>
   </div>
 </Layout>
