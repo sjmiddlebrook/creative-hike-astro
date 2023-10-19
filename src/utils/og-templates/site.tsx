@@ -43,6 +43,7 @@ export default () => {
             backgroundColor: '#ccfbf1',
             borderRadius: '100%',
             borderWidth: '1px',
+            borderColor: '#e5e7eb'
           }}
           width={240}
           height={240}
