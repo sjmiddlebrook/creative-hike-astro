@@ -2,7 +2,7 @@
 title: 'Simple Favicons'
 description: 'Adding a responsive favicon'
 pubDate: '2023-10-20'
-draft: true
+draft: false
 tags: ['project-start', 'dev', 'css']
 ---
 
@@ -42,4 +42,4 @@ With an svg favicon we can use css media queries to update the icon if the user 
 </svg>
 ```
 
-And now your favicon should adapt with the user's settings
+And now your favicon should adapt to the user's settings
