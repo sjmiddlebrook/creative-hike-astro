@@ -2,7 +2,7 @@
 title: 'HTML Forms and PRG'
 description: 'Handling HTML Form submissions and preventing a resubmission on back or refresh'
 pubDate: '2023-10-21'
-draft: true
+draft: false
 tags: ['web-fundamentals', 'dev', 'html']
 ---
 
