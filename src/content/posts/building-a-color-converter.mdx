@@ -1,0 +1,18 @@
+---
+title: 'Building a color converter'
+description: 'Converting colors from RGB to HEX'
+pubDate: '2023-10-29'
+draft: false
+tags: ['web-fundamentals', 'dev', 'html']
+---
+import ColorConverterPreview from '@components/colors/ColorConverterPreview.svelte';
+
+I was working on a project and I needed a rgb value instead of a hex code for a color. The first result on google presented me with a captcha. The second result I entered the hex code with a leading # and it gave me an error.
+
+Instead, I built a page to do the color conversion between [rgb and hex](/color-converter)
+
+This took me a little longer than I expected because I wanted to handle a couple of cases. The first was being able to edit either the hex or the rgb values and have the background color update. The second was storing the color in local storage so on a page refresh the same color would persist. Finally, I wanted a copy button so I could easily copy the rgb value (or hex code) to my clipboard.
+
+Here is a the color conversion component below built with Svelte.
+
+<ColorConverterPreview client:only />
