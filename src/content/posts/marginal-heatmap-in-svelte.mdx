@@ -1,0 +1,69 @@
+---
+title: 'Creating a Marginal Heatmap in Svelte'
+description: 'How to create a marginal heatmap with Svelte'
+pubDate: '2023-10-29'
+draft: true
+tags: ['web', 'data-viz', 'svelte']
+---
+import SvelteHeatmap from '@components/data-viz/Heatmap.svelte';
+
+We are going to go through the following steps to create the marginal histogram
+
+1. Generate random data
+2. display data in grid
+3. create color scale
+4. apply color scale to heatmap
+5. build histogram for totals
+6. add histograms to margins
+
+## Generating Random Data
+
+We want random values to fill for each hour of the day and each day of the week
+
+For the data, we will model it as a 2D matrix (an array of arrays).
+
+In our case, the each row will represent a day of the week, and each column will represent an hour of the day. The output of the random data generator will be an array of 7 arrays with 24 values in each.
+
+```tsx
+function generateRandomHeatmapData() {
+  const dataByDay = [];
+  for (let day = 0; day < 7; day++) {
+    const dataByHour = [];
+    for (let hour = 0; hour < 24; hour++) {
+      const randomVal = Math.floor(Math.random() * 100)
+      dataByHour.push(randomVal);
+    }
+    dataByDay.push(dataByHour);
+  }
+  return dataByDay;
+}
+const data = generateRandomHeatmapData()
+// data = [[80, 44, 74, ...], [53, 78, 10, ...], ...]
+```
+
+## Display Data in Grid
+
+Now we want to creating a grid with the random data from the prior step.
+
+Since we are dealing with a table of data, I think using css grid makes sense for this layout.
+
+Using a grid layout we will need 7 columns (one for each day of the week), and some space between each column and row.
+
+We are also setting a max-width so the cells don’t stretch too wide. Inside each cell we will render the number centered. To start we can just use a consistent background color of orange to see the cells.
+
+In Tailwind and Svelte we can represent with the classes below.
+
+```html
+<div class="grid max-w-xl grid-cols-7 gap-0.5">
+  {#each data as day}
+    {#each day as value}
+      <div class="flex items-center justify-center bg-orange-300">
+        {value}
+      </div>
+    {/each}
+  {/each}
+</div>
+```
+With these two combined we get the output of a grid like below.
+
+<SvelteHeatmap client:load />
