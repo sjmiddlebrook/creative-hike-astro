@@ -14,15 +14,8 @@ const { slug, title, date, description } = Astro.props;
     <h2
       class="text-base font-semibold tracking-tight text-zinc-800 dark:text-zinc-100"
     >
-      <div
-        class="absolute -inset-x-4 -inset-y-6 scale-95 bg-zinc-50 opacity-0 transition group-hover:scale-100 group-hover:opacity-100 dark:bg-zinc-800/50 sm:-inset-x-6 sm:rounded-2xl"
-      >
-      </div>
       <a href={`/posts/${slug}`}>
-        <span
-          class="absolute -inset-x-4 -inset-y-6 sm:-inset-x-6 sm:rounded-2xl"
-        ></span>
-        <span class="relative">{title}</span>
+        {title}
       </a>
     </h2>
     <time
@@ -44,11 +37,11 @@ const { slug, title, date, description } = Astro.props;
     <p class="relative mt-2 text-sm text-zinc-700 dark:text-zinc-400">
       {description}
     </p>
-    <div
+    <a href={`/posts/${slug}`}
       class="relative mt-4 flex items-center text-sm font-medium text-teal-600"
     >
       Read post
-    </div>
+    </a>
   </div>
   <time
     datetime={date.toISOString()}

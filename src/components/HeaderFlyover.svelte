@@ -30,8 +30,8 @@
   </button>
   {#if isExpanded}
     <div
-      transition:slide
-      class="absolute left-1/2 z-10 pt-3 flex w-screen max-w-max -translate-x-1/2 px-4"
+      transition:slide={{ duration: 150 }}
+      class="absolute z-10 flex w-screen max-w-max -translate-x-1/2 px-4 pt-3 sm:left-1/2"
     >
       <div
         class="w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-zinc-50 text-sm leading-6 shadow-lg ring-1 ring-gray-900/5"
@@ -40,7 +40,7 @@
           class="group relative flex gap-x-6 rounded-lg p-4 hover:bg-gray-50"
         >
           <div
-            class="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white"
+            class="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
