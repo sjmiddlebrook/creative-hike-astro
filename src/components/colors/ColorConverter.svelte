@@ -12,28 +12,32 @@
   import { persisted } from './local-storage';
 
   export let showLogo = true;
+  export let showColorPicker = true;
   const persistedBgColor = persisted('color', '#48617a');
   let bgColor = get(persistedBgColor);
   let hex = bgColor;
   let rgb = hexToRGB(hex);
-  const errorColor = '#fecaca';
+  const errorColor = '#b91c1c';
   const hexError = 'Invalid Hex';
   const rgbError = 'Invalid RGB';
+
+  function setEmptyColor() {
+    bgColor = '#000000';
+    persistedBgColor.set(bgColor);
+    hex = '';
+    rgb = '';
+  }
 
   function handleHexChange(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     if (!value) {
-      bgColor = '#000000';
-      persistedBgColor.set(bgColor);
-      hex = '';
-      rgb = '';
+      setEmptyColor()
       return;
     }
     const isValid = isValidHexColor(value);
     if (!isValid) {
       rgb = hexError;
       bgColor = errorColor;
-      persistedBgColor.set(bgColor);
       return;
     }
     hex = value;
@@ -44,17 +48,13 @@
   function handleRGBChange(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     if (!value) {
-      bgColor = '#000000';
-      persistedBgColor.set(bgColor);
-      hex = '';
-      rgb = '';
+      setEmptyColor()
       return;
     }
     const isValid = isValidRgbColor(value);
     if (!isValid) {
       hex = rgbError;
       bgColor = errorColor;
-      persistedBgColor.set(bgColor);
       return;
     }
     const { r, g, b } = sanitizeRGB(value);
@@ -62,18 +62,6 @@
     hex = RGBToHex({ r, g, b });
     bgColor = hex;
     persistedBgColor.set(bgColor);
-  }
-
-  function copyToClipboard(target: 'rgb' | 'hex') {
-    const copyValue = target === 'rgb' ? rgb : hex;
-    navigator.clipboard.writeText(copyValue).then(
-      () => {
-        // console.log('clipboard write success');
-      },
-      () => {
-        // console.log('clipboard write failed');
-      },
-    );
   }
 </script>
 
@@ -111,6 +99,26 @@
   <div
     class="flex w-full max-w-xs flex-col space-y-6 placeholder-slate-800 sm:max-w-sm"
   >
+    {#if showColorPicker}
+      <div class="flex items-center justify-center">
+        <div
+          class="flex w-fit flex-col items-center justify-center rounded-md bg-white p-4 shadow-sm"
+        >
+          <label
+            for="color-picker"
+            class="block pb-1 text-xs font-medium text-slate-600"
+            >color picker</label
+          >
+          <input
+            id="color-picker"
+            class="cursor-pointer"
+            type="color"
+            value={bgColor}
+            on:input={(e) => handleHexChange(e)}
+          />
+        </div>
+      </div>
+    {/if}
     <div class="isolate -space-y-px rounded-md bg-white shadow-sm">
       <div
         class="relative rounded-md rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300"
@@ -129,7 +137,9 @@
           class="block w-full border-0 bg-transparent p-0 py-1 text-2xl text-slate-800 focus:ring-0 sm:text-4xl sm:text-slate-600"
           placeholder="hex"
         />
-        <CopyToClipboard handleCopy={() => copyToClipboard('hex')} />
+        <div class="absolute flex items-center justify-center bottom-2 right-2 p-2">
+          <CopyToClipboard valueToCopy={hex} />
+        </div>
       </div>
       <div
         class="relative rounded-md rounded-t-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300"
@@ -148,7 +158,9 @@
           class="block w-full border-0 bg-transparent p-0 py-1 text-2xl text-slate-800 focus:ring-0 sm:text-4xl sm:text-slate-600"
           placeholder="rgb"
         />
-        <CopyToClipboard handleCopy={() => copyToClipboard('rgb')} />
+        <div class="absolute flex items-center justify-center bottom-2 right-2 p-2">
+          <CopyToClipboard valueToCopy={rgb} />
+        </div>
       </div>
     </div>
   </div>
