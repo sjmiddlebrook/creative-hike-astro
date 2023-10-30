@@ -2,7 +2,7 @@
 title: 'Removing Trailing Slashes with Astro'
 description: 'How to remove the trailing slash from an Astro static site.'
 pubDate: '2023-10-30'
-draft: true
+draft: false
 tags: ['web', 'astro']
 ---
 
