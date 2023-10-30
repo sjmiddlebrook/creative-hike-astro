@@ -71,6 +71,7 @@
 >
   {#if showLogo}
     <a href="/" class="absolute left-6 top-6 flex items-center space-x-4">
+      <span class="sr-only">Home</span>
       <svg
         class="h-10 rounded-full border"
         viewBox="0 -120 513 480"

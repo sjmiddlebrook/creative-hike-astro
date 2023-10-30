@@ -4,7 +4,7 @@ import Footer from '@components/Footer.astro';
 import Header from '@components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '@utils/consts';
 
-let { title, description, image } = Astro.props;
+let { title, description, image, showHeader = true } = Astro.props;
 title = title || SITE_TITLE;
 description = description || SITE_DESCRIPTION;
 ---
@@ -15,7 +15,7 @@ description = description || SITE_DESCRIPTION;
   </head>
   <body class="flex h-full bg-zinc-50 dark:bg-black">
     <main class="flex w-full flex-col">
-      <Header />
+      {showHeader && <Header />}
       <div class="mx-auto w-full max-w-7xl px-6">
         <slot />
       </div>

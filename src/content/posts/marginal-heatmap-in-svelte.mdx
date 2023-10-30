@@ -5,16 +5,22 @@ pubDate: '2023-10-31'
 draft: true
 tags: ['web', 'data-viz', 'svelte']
 ---
+import { randomData } from '@utils/data-viz/data.ts';
+import SvelteMarginalHistogram from '@components/data-viz/MarginalHistogram.svelte';
 import SvelteHeatmap from '@components/data-viz/Heatmap.svelte';
+import SvelteHistogram from '@components/data-viz/Histogram.svelte';
 
 We are going to go through the following steps to create the marginal histogram
 
 1. Generate random data
-2. display data in grid
-3. create color scale
-4. apply color scale to heatmap
-5. build histogram for totals
-6. add histograms to margins
+2. Display data in grid
+3. Create color scale
+4. Apply color scale to heatmap
+5. Build histogram for totals
+6. Putting the histogram and heatmap together
+
+Here is demo of what we are creating with some random data:
+<SvelteMarginalHistogram randomData={randomData} />
 
 ## Generating Random Data
 
@@ -25,19 +31,29 @@ For the data, we will model it as a 2D matrix (an array of arrays).
 In our case, the each row will represent a day of the week, and each column will represent an hour of the day. The output of the random data generator will be an array of 7 arrays with 24 values in each.
 
 ```tsx
-function generateRandomHeatmapData() {
+function generateRandomHeatmapData({
+  min = 0,
+  max = 100,
+}: {
+  min?: number;
+  max?: number;
+} = {}) {
   const dataByDay = [];
   for (let day = 0; day < 7; day++) {
     const dataByHour = [];
     for (let hour = 0; hour < 24; hour++) {
-      const randomVal = Math.floor(Math.random() * 100)
+      const randomVal = Math.floor(Math.random() * 100);
       dataByHour.push(randomVal);
     }
     dataByDay.push(dataByHour);
   }
-  return dataByDay;
+  return {
+    data: dataByDay,
+    min,
+    max,
+  };
 }
-const data = generateRandomHeatmapData()
+const { data } = generateRandomHeatmapData()
 // data = [[80, 44, 74, ...], [53, 78, 10, ...], ...]
 ```
 
@@ -64,6 +80,267 @@ In Tailwind and Svelte we can represent with the classes below.
   {/each}
 </div>
 ```
-With these two combined we get the output of a grid like below.
 
-<SvelteHeatmap client:load />
+## Creating a Color Scale
+
+Instead of the same background for each cell, we want to instead create a scale of colors to highlight the larger values with a darker background.
+
+We will adjust the color using rgba where the last value (alpha) will control the opacity of the color. Since we don’t want the values at the bottom of the range to be fully transparent we will only place values within the range of 0.2 to 1 for the alpha value. To achieve this we will add a linear interpolation function (lerp).
+
+```typescript
+function lerp({
+  x,
+  xMin,
+  xMax,
+  yMin = 0,
+  yMax = 1,
+}: {
+  x: number;
+  xMin: number;
+  xMax: number;
+  yMin?: number;
+  yMax?: number;
+}) {
+  const ySpread = yMax - yMin;
+  const xRatio = (x - xMin) / (xMax - xMin);
+  const y = xRatio * ySpread + yMin;
+  return y;
+}
+```
+
+## Apply color scale to Heatmap
+
+Now that we have the alpha value for the rgba calculated we can apply the background color to each cell.
+
+```typescript
+<script>
+  import {
+    generateRandomHeatmapData,
+    lerp,
+  } from '@utils/data-viz/heatmaps';
+  const { data, min, max } = generateRandomHeatmapData();
+
+function getHeatmapColor(value: number) {
+    const alpha = lerp({
+      x: value,
+      xMin: min,
+      xMax: max,
+      yMin: 0.2,
+      yMax: 1,
+    });
+    return `rgba(253, 186, 116, ${alpha})`;
+  }
+</script>
+
+<div class="grid max-w-xl grid-cols-7 gap-0.5">
+  {#each data as row}
+    {#each row as value}
+      <div
+        class="flex items-center justify-center"
+        style="background-color: {getHeatmapColor(value)};"
+      >
+        {value}
+      </div>
+    {/each}
+  {/each}
+</div>
+```
+Now our heatmap looks like the below
+<SvelteHeatmap randomData={randomData} />
+
+## Build Histogram for Totals
+
+Now that we have the heatmap functioning, we need to build a histogram to get the totals by day and the totals by hour.
+
+For the histogram, we have two cases: (1) for week days we want the bars vertical and (2) for hours we want the bars horizontal
+
+Once we total the values by day and by hour we can display the histogram as below
+
+```typescript
+<script lang="ts">
+  import { lerp, generateRandomData } from '@utils/data-viz/data';
+
+  export let category: 'hour' | 'day' = 'day';
+  const isDay = category === 'day';
+  const { data, weekHeaders, hourHeaders } = generateRandomData();
+  const dayTotals = Array(7).fill(0);
+  const hourlyTotals = [];
+  for (const hourly of data) {
+    let hourTotal = 0;
+    for (const [idx, value] of hourly.entries()) {
+      dayTotals[idx] += value;
+      hourTotal += value;
+    }
+    hourlyTotals.push(hourTotal);
+  }
+  const histData = isDay ? dayTotals : hourlyTotals;
+  const intervals = isDay ? weekHeaders : hourHeaders;
+
+  function getSize(value: number) {
+    const size = lerp({
+      x: value,
+      xMin: 0,
+      xMax: Math.max(...histData),
+      yMin: 0,
+      yMax: 200,
+    });
+    return `${size}px`;
+  }
+</script>
+
+<div class="max-w-xl">
+  {#if isDay}
+    <div class="flex items-end space-x-1">
+      {#each histData as value}
+        <div class="w-12 bg-teal-400" style="height: {getSize(value)}" />
+      {/each}
+    </div>
+    <div class="flex space-x-1">
+      {#each intervals as interval}
+        <div class="w-12 text-center">{interval}</div>
+      {/each}
+    </div>
+  {:else}
+    <div class="container">
+      {#each histData as value, idx}
+        <div class="flex items-center">{hourHeaders[idx]}</div>
+        <div class="h-12 bg-teal-400" style="width: {getSize(value)}" />
+      {/each}
+    </div>
+  {/if}
+</div>
+
+<style>
+  .container {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    grid-gap: 0.125rem;
+  }
+</style>
+```
+### Histogram for Days
+<SvelteHistogram randomData={randomData} category="day" />
+
+### Histogram for Hours
+<SvelteHistogram randomData={randomData} category="hour" />
+
+## Putting the histogram and heatmap together
+
+Now the last step is putting the histograms beside the heatmap. The histogram for hourly data will need to be added as an additional column in the grid, and the histogram for weekly data will be added as the last row.
+
+One change I made for the background colors was adding an interpolation between three colors. This allows for a larger range in color contrast between the highest value and lowest value. The final svelte component is below:
+
+```typescript
+<script lang="ts">
+  import { generateRandomData, lerp, lerpColor } from '@utils/data-viz/data';
+  export let randomData = generateRandomData();
+  const { data, min, max, weekHeaders, hourHeaders } = randomData;
+
+  const histDataDays = Array(7).fill(0);
+  const histDataHours: number[] = [];
+  for (const hourly of data) {
+    let hourTotal = 0;
+    for (const [idx, value] of hourly.entries()) {
+      histDataDays[idx] += value;
+      hourTotal += value;
+    }
+    histDataHours.push(hourTotal);
+  }
+
+  function getSize({ value, type }: { value: number; type: 'day' | 'hour' }) {
+    const isDay = type === 'day';
+    const histData = isDay ? histDataDays : histDataHours;
+    const yMax = isDay ? 120 : 80;
+    const size = lerp({
+      x: value,
+      xMin: 0,
+      xMax: Math.max(...histData),
+      yMin: 0,
+      yMax,
+    });
+    return `${size}px`;
+  }
+
+  function interpolateColor(value: number) {
+    const midValue = min + 0.5 * (max - min);
+    const colorStart: [number, number, number] = [246, 209, 159];
+    const colorMid: [number, number, number] = [232, 151, 90];
+    const colorEnd: [number, number, number] = [167, 101, 79];
+    if (value <= midValue) {
+      return lerpColor({
+        value,
+        min,
+        max: midValue,
+        colorStart,
+        colorEnd: colorMid,
+      });
+    } else {
+      return lerpColor({
+        value,
+        min: midValue,
+        max,
+        colorStart: colorMid,
+        colorEnd,
+      });
+    }
+  }
+</script>
+
+<div class="min-w-500px container max-w-2xl">
+  {#each data as row, rowIdx}
+    {#if rowIdx === 0}
+      <div />
+      {#each weekHeaders as colHeader}
+        <div
+          class="flex items-center justify-center text-sm font-semibold text-zinc-600"
+        >
+          {colHeader}
+        </div>
+      {/each}
+      <div />
+    {/if}
+    <div class="text-sm font-semibold text-zinc-600">{hourHeaders[rowIdx]}</div>
+    {#each row as value}
+      <div
+        class="flex items-center justify-center text-zinc-800"
+        style="background-color: {interpolateColor(value)};"
+      >
+        {value}
+      </div>
+    {/each}
+    <div class="flex">
+      <div
+        class="h-full shrink-0 bg-zinc-300"
+        style="width: {getSize({ value: histDataHours[rowIdx], type: 'hour' })}"
+      />
+      <div class="pl-1 text-sm text-zinc-500">
+        {new Intl.NumberFormat().format(histDataHours[rowIdx])}
+      </div>
+    </div>
+  {/each}
+  <div />
+  {#each histDataDays as value}
+    <div>
+      <div
+        class="w-full bg-zinc-300"
+        style="height: {getSize({ value, type: 'day' })}"
+      />
+      <div class="pt-1 text-center text-sm text-zinc-500">
+        {new Intl.NumberFormat().format(value)}
+      </div>
+    </div>
+  {/each}
+  <div />
+</div>
+
+<style>
+  .container {
+    display: grid;
+    grid-template-columns: 50px repeat(8, minmax(40px, 1fr));
+    grid-gap: 0.125rem;
+  }
+</style>
+```
+And the final output:
+
+<SvelteMarginalHistogram randomData={randomData} />
