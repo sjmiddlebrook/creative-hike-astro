@@ -15,18 +15,18 @@ const { slug, title, date, description } = Astro.props;
       class="text-base font-semibold tracking-tight text-zinc-800 dark:text-zinc-100"
     >
       <div
-        class="absolute -inset-x-4 -inset-y-6 z-0 scale-95 bg-zinc-50 opacity-0 transition group-hover:scale-100 group-hover:opacity-100 dark:bg-zinc-800/50 sm:-inset-x-6 sm:rounded-2xl"
+        class="absolute -inset-x-4 -inset-y-6 scale-95 bg-zinc-50 opacity-0 transition group-hover:scale-100 group-hover:opacity-100 dark:bg-zinc-800/50 sm:-inset-x-6 sm:rounded-2xl"
       >
       </div>
       <a href={`/posts/${slug}`}>
         <span
-          class="absolute -inset-x-4 -inset-y-6 z-20 sm:-inset-x-6 sm:rounded-2xl"
+          class="absolute -inset-x-4 -inset-y-6 sm:-inset-x-6 sm:rounded-2xl"
         ></span>
-        <span class="relative z-10">{title}</span>
+        <span class="relative">{title}</span>
       </a>
     </h2>
     <time
-      class="relative z-10 order-first mb-3 flex items-center pl-3.5 text-sm text-zinc-600 dark:text-zinc-400 md:hidden"
+      class="relative order-first mb-3 flex items-center pl-3.5 text-sm text-zinc-600 dark:text-zinc-400 md:hidden"
       datetime={date.toISOString()}
       ><span
         class="absolute inset-y-0 left-0 flex items-center"
@@ -41,18 +41,18 @@ const { slug, title, date, description } = Astro.props;
         })
       }</time
     >
-    <p class="relative z-10 mt-2 text-sm text-zinc-700 dark:text-zinc-400">
+    <p class="relative mt-2 text-sm text-zinc-700 dark:text-zinc-400">
       {description}
     </p>
     <div
-      class="relative z-10 mt-4 flex items-center text-sm font-medium text-teal-600"
+      class="relative mt-4 flex items-center text-sm font-medium text-teal-600"
     >
       Read post
     </div>
   </div>
   <time
     datetime={date.toISOString()}
-    class="relative z-10 order-first mb-3 mt-1 hidden items-center text-sm text-zinc-600 dark:text-zinc-500 md:block"
+    class="relative order-first mb-3 mt-1 hidden items-center text-sm text-zinc-600 dark:text-zinc-500 md:block"
   >
     {
       date.toLocaleDateString('en-us', {

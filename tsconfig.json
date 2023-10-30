@@ -10,6 +10,9 @@
       "@components/*": [
         "src/components/*"
       ],
+      "@actions/*": [
+        "src/actions/*"
+      ],
       "@layouts/*": [
         "src/layouts/*"
       ]
