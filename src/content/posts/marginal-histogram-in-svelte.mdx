@@ -1,14 +1,16 @@
 ---
-title: 'Creating a Marginal Heatmap in Svelte'
-description: 'How to create a marginal heatmap with Svelte'
+title: 'Creating a Heatmap with a Marginal Histogram in Svelte'
+description: 'How to create a highlight table with marginal histograms in Svelte'
 pubDate: '2023-10-31'
-draft: true
+draft: false
 tags: ['web', 'data-viz', 'svelte']
 ---
 import { randomData } from '@utils/data-viz/data.ts';
 import SvelteMarginalHistogram from '@components/data-viz/MarginalHistogram.svelte';
 import SvelteHeatmap from '@components/data-viz/Heatmap.svelte';
 import SvelteHistogram from '@components/data-viz/Histogram.svelte';
+
+I recently started reading [The Big Picture by Steve Wexler](https://www.amazon.sg/Big-Picture-Visualization-Better-Decisions_Faster/dp/126047352X) and found the highlight table with marginal histogram in Chapter 1 to be a great visualization. I wanted to try and recreate this in Svelte.
 
 We are going to go through the following steps to create the marginal histogram
 
@@ -341,6 +343,6 @@ One change I made for the background colors was adding an interpolation between 
   }
 </style>
 ```
-And the final output:
+The below marginal histogram will be with random data each time you refresh the page.
 
-<SvelteMarginalHistogram randomData={randomData} />
+<SvelteMarginalHistogram />
