@@ -17,7 +17,7 @@
   <button
     on:click={toggleExpanded}
     type="button"
-    class="inline-flex items-center gap-x-1 font-semibold leading-6 text-gray-900"
+    class="inline-flex items-center gap-x-1 font-semibold leading-6 text-zinc-800 dark:text-zinc-100"
   >
     <span>Tools</span>
     <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
