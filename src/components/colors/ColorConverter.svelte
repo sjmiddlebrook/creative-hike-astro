@@ -31,7 +31,7 @@
   function handleHexChange(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     if (!value) {
-      setEmptyColor()
+      setEmptyColor();
       return;
     }
     const isValid = isValidHexColor(value);
@@ -45,10 +45,11 @@
     bgColor = hex;
     persistedBgColor.set(bgColor);
   }
+
   function handleRGBChange(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     if (!value) {
-      setEmptyColor()
+      setEmptyColor();
       return;
     }
     const isValid = isValidRgbColor(value);
@@ -62,6 +63,19 @@
     hex = RGBToHex({ r, g, b });
     bgColor = hex;
     persistedBgColor.set(bgColor);
+  }
+
+  function expandHexCode(hex: string) {
+    if (!hex) return '';
+    const hexCode = hex.replace('#', '');
+    if (hexCode.length === 3) {
+      const expanded = hexCode
+        .split('')
+        .map((char) => `${char}${char}`)
+        .join('');
+      return `#${expanded}`;
+    }
+    return hex;
   }
 </script>
 
@@ -114,7 +128,7 @@
             id="color-picker"
             class="cursor-pointer"
             type="color"
-            value={bgColor}
+            value={expandHexCode(bgColor)}
             on:input={(e) => handleHexChange(e)}
           />
         </div>
@@ -138,7 +152,9 @@
           class="block w-full border-0 bg-transparent p-0 py-1 text-2xl text-slate-800 focus:ring-0 sm:text-4xl sm:text-slate-600"
           placeholder="hex"
         />
-        <div class="absolute flex items-center justify-center bottom-2 right-2 p-2">
+        <div
+          class="absolute bottom-2 right-2 flex items-center justify-center p-2"
+        >
           <CopyToClipboard valueToCopy={hex} />
         </div>
       </div>
@@ -159,7 +175,9 @@
           class="block w-full border-0 bg-transparent p-0 py-1 text-2xl text-slate-800 focus:ring-0 sm:text-4xl sm:text-slate-600"
           placeholder="rgb"
         />
-        <div class="absolute flex items-center justify-center bottom-2 right-2 p-2">
+        <div
+          class="absolute bottom-2 right-2 flex items-center justify-center p-2"
+        >
           <CopyToClipboard valueToCopy={rgb} />
         </div>
       </div>
