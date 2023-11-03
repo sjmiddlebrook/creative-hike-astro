@@ -1,0 +1,113 @@
+---
+title: 'Debounced search with React'
+description: 'Building a search input with debounce in React'
+pubDate: '2023-11-03'
+draft: false
+tags: ['interview', 'dev', 'react']
+---
+
+import SearchInput from '@components/interview-prep/SearchInput.tsx';
+import DebouncedSearchInput from '@components/interview-prep/DebouncedSearchInput.tsx';
+
+We can start with a basic Search Input with React where we are trying to implement an autocomplete or search functionality. You can imagine in the useEffect call we would have some async functionality where we are calling out to an api to get the search results as the user types.
+
+Below the search I've included a text showing how many api calls would have been made as a user types.
+
+<SearchInput client:load />
+
+```tsx
+import { useEffect, useState } from 'react';
+
+export default function SearchInput() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [apiCallCount, setApiCallCount] = useState(0);
+
+  useEffect(() => {
+    if (searchTerm) {
+      // ...api call logic
+      setApiCallCount((prev) => prev + 1);
+    }
+  }, [searchTerm]);
+
+  return (
+    <div className="flex max-w-xs flex-col space-y-1 border-2 border-teal-400 border-dashed p-4">
+      <label htmlFor="search">Search</label>
+      <input
+        id="search"
+        type="search"
+        autoComplete="off"
+        placeholder="Search..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      <p>API calls: {apiCallCount}</p>
+    </div>
+  );
+}
+```
+
+Making requests on every keystroke is not ideal for performance. Instead what we want is when the user finishes typing we make the call to the api.
+
+This is a great use case for debounce where we want to reduce the number of api calls.
+
+<DebouncedSearchInput client:load />
+
+```tsx
+import { useEffect, useState } from 'react';
+
+function useDebounce(value: string, delay: number) {
+  const [debouncedValue, setDebouncedValue] = useState('');
+  useEffect(() => {
+    const timeoutID = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+    return () => {
+      clearTimeout(timeoutID);
+    };
+  }, [value, delay]);
+  return debouncedValue;
+}
+
+export default function SearchInput() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [apiCallCount, setApiCallCount] = useState(0);
+  const [debouncedAPICallCount, setDebouncedAPICallCount] = useState(0);
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      // ...api call logic
+      setDebouncedAPICallCount((prev) => prev + 1);
+    }
+  }, [debouncedSearchTerm]);
+  useEffect(() => {
+    if (searchTerm) {
+      // count to compare with debouncedAPICallCount
+      setApiCallCount((prev) => prev + 1);
+    }
+  }, [searchTerm]);
+
+  return (
+    <div className="flex max-w-xs flex-col space-y-1 border-2 border-dashed border-teal-400 p-4">
+      <label htmlFor="search">Search</label>
+      <input
+        id="search"
+        type="search"
+        autoComplete="off"
+        placeholder="Search..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      <p>API calls w/out debounce: {apiCallCount}</p>
+      <p>API calls w/ debounce : {debouncedAPICallCount}</p>
+    </div>
+  );
+}
+
+```
+
+In the debounced example we have added a custom hook called useDebounce that implements the limiting of updates to a value.
+
+The custom hook keeps track of the debounced value and has a single useEffect call that sets a timeout to update the debounced value after the specified delay in milliseconds.
+
+Here the cleanup function in the useEffect is important in that any time the search value changes any existing timeout will be cleared and a new timeout is set with the latest value.
