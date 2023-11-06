@@ -68,6 +68,35 @@
             </p>
           </div>
         </div>
+        <div
+          class="group relative flex gap-x-6 rounded-lg p-4 hover:bg-gray-50"
+        >
+          <div
+            class="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="h-6 w-6 text-gray-600 group-hover:text-teal-600"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
+              />
+            </svg>
+          </div>
+          <div>
+            <a href="/lorem-ipsum" class="font-semibold text-gray-900">
+              Lorem Ipsum
+              <span class="absolute inset-0"></span>
+            </a>
+            <p class="mt-1 text-gray-600">Generate random lorem ipsum text</p>
+          </div>
+        </div>
       </div>
     </div>
   {/if}

@@ -1,5 +1,6 @@
 <script lang="ts">
   export let valueToCopy: string;
+  export let buttonText = '';
   const copyFeedbackTimeout = 1500;
   const copyMessage = 'copied!';
   let copyFeedback = '';
@@ -26,8 +27,7 @@
       {copyFeedback}
     </div>
   {/if}
-  <button type="button" title="Copy to clipboard" on:click={copyToClipboard}>
-    <span class="sr-only">Copy</span>
+  <button class="flex justify-center items-center" type="button" title="Copy to clipboard" on:click={copyToClipboard}>
     <svg
       xmlns="http://www.w3.org/2000/svg"
       class="h-auto w-5 text-slate-500 sm:w-6"
@@ -41,5 +41,10 @@
         d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
       /></svg
     >
+    {#if buttonText}
+      <span class="pl-2">{buttonText}</span>
+    {:else}
+      <span class="sr-only">Copy</span>
+    {/if}
   </button>
 </div>

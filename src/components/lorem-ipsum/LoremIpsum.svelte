@@ -1,81 +1,49 @@
 <script lang="ts">
   import { get } from 'svelte/store';
-  import {
-    formatRGB,
-    hexToRGB,
-    isValidHexColor,
-    isValidRgbColor,
-    RGBToHex,
-    sanitizeRGB,
-  } from '@utils/colors';
+  import { generateLoremIpsum } from '@utils/lorem-ipsum';
   import CopyToClipboard from '@components/svelte-utils/CopyToClipboard.svelte';
   import { persisted } from '@components/svelte-utils/local-storage';
 
   export let showLogo = true;
-  export let showColorPicker = true;
   const persistedBgColor = persisted('color', '#48617a');
-  let bgColor = get(persistedBgColor);
-  let hex = bgColor;
-  let rgb = hexToRGB(hex);
+  let persistedLoremIpsum = persisted('lorem-ipsum', {
+    paragraphs: 1,
+    characters: 280,
+  });
+  let paragraphs = get(persistedLoremIpsum).paragraphs;
+  let characters = get(persistedLoremIpsum).characters;
+
   const errorColor = '#b91c1c';
-  const hexError = 'Invalid Hex';
-  const rgbError = 'Invalid RGB';
+  let bgColor = get(persistedBgColor);
+  // let loremText = 'testing';
+  let loremText = generateLoremIpsum(get(persistedLoremIpsum));
 
-  function setEmptyColor() {
-    bgColor = '#000000';
-    persistedBgColor.set(bgColor);
-    hex = '';
-    rgb = '';
-  }
-
-  function handleHexChange(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
+  function handleInputChange(event: Event, type: 'paragraphs' | 'characters') {
+    const value = (event.target as HTMLInputElement).valueAsNumber;
     if (!value) {
-      setEmptyColor();
       return;
     }
-    const isValid = isValidHexColor(value);
-    if (!isValid) {
-      rgb = hexError;
+    const updatedOptions = {
+      ...get(persistedLoremIpsum),
+      [type]: value,
+    };
+    persistedLoremIpsum.set(updatedOptions);
+    // Example usage:
+    try {
+      loremText = generateLoremIpsum(updatedOptions);
+    } catch (error) {
       bgColor = errorColor;
-      return;
+      loremText = 'Error generating lorem ipsum';
     }
-    hex = value;
-    rgb = hexToRGB(hex);
-    bgColor = hex;
-    persistedBgColor.set(bgColor);
   }
 
-  function handleRGBChange(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
-    if (!value) {
-      setEmptyColor();
-      return;
-    }
-    const isValid = isValidRgbColor(value);
-    if (!isValid) {
-      hex = rgbError;
+  function regenerateText() {
+    try {
+      loremText = generateLoremIpsum(get(persistedLoremIpsum));
+    } catch (error) {
       bgColor = errorColor;
-      return;
+      loremText = 'Error generating lorem ipsum';
     }
-    const { r, g, b } = sanitizeRGB(value);
-    rgb = formatRGB({ r, g, b });
-    hex = RGBToHex({ r, g, b });
-    bgColor = hex;
-    persistedBgColor.set(bgColor);
-  }
-
-  function expandHexCode(hex: string) {
-    if (!hex) return '';
-    const hexCode = hex.replace('#', '');
-    if (hexCode.length === 3) {
-      const expanded = hexCode
-        .split('')
-        .map((char) => `${char}${char}`)
-        .join('');
-      return `#${expanded}`;
-    }
-    return hex;
   }
 </script>
 
@@ -112,75 +80,85 @@
     </a>
   {/if}
   <div
-    class="flex w-full max-w-xs flex-col space-y-6 placeholder-slate-800 sm:max-w-sm"
+    class="flex w-full flex-col items-center justify-center sm:items-start space-y-2 placeholder-slate-800 sm:flex-row sm:space-x-4 sm:space-y-0 md:space-x-6"
   >
-    {#if showColorPicker}
-      <div class="flex items-center justify-center">
-        <div
-          class="flex w-fit flex-col items-center justify-center rounded-md bg-white p-4 shadow-sm"
+    <div
+      class="isolate flex h-fit rounded-md bg-white shadow-sm min-w-[180px] sm:min-w-[120px] sm:flex-col sm:justify-center sm:-space-y-px"
+    >
+      <div
+        class="relative rounded-md rounded-r-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 sm:rounded-b-none sm:rounded-tr-md"
+      >
+        <label for="paragraphs" class="block text-xs font-medium text-slate-600"
+          >paragraphs</label
         >
-          <label
-            for="color-picker"
-            class="block pb-1 text-xs font-medium text-slate-600"
-            >color picker</label
+        <input
+          value={paragraphs}
+          on:input={(e) => handleInputChange(e, 'paragraphs')}
+          type="number"
+          name="paragraphs"
+          id="paragraphs"
+          min="1"
+          max="20"
+          class="w-full border-0 bg-transparent p-0 py-1 text-2xl text-slate-800 focus:ring-0 sm:text-4xl sm:text-slate-600"
+        />
+      </div>
+      <div
+        class="relative rounded-md rounded-l-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 sm:rounded-bl-md sm:rounded-t-none"
+      >
+        <label for="characters" class="block text-xs font-medium text-slate-600"
+          >characters (max)</label
+        >
+        <input
+          value={characters}
+          on:input={(e) => handleInputChange(e, 'characters')}
+          type="number"
+          name="characters"
+          id="characters"
+          min="1"
+          max="10000"
+          step="10"
+          class="w-full border-0 bg-transparent p-0 py-1 text-2xl text-slate-800 focus:ring-0 sm:text-4xl sm:text-slate-600"
+        />
+      </div>
+    </div>
+    <div
+      class="relative mx-4 flex h-fit flex-col justify-center -space-y-px rounded-md bg-white text-slate-800 shadow-sm sm:mx-0"
+    >
+      <div
+        class="absolute left-0 top-4 px-4 z-10 flex space-x-6 bg-white bg-opacity-90"
+      >
+        <button class="flex space-x-3" on:click={regenerateText}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="h-6 w-6"
           >
-          <input
-            id="color-picker"
-            class="cursor-pointer"
-            type="color"
-            value={expandHexCode(bgColor)}
-            on:input={(e) => handleHexChange(e)}
-          />
-        </div>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+            />
+          </svg>
+          <span>Regenerate</span>
+        </button>
+        <CopyToClipboard valueToCopy={loremText} buttonText="Copy Text" />
       </div>
-    {/if}
-    <div class="isolate -space-y-px rounded-md bg-white shadow-sm">
-      <div
-        class="relative rounded-md rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300"
-      >
-        <label for="hex" class="block text-xs font-medium text-slate-600"
-          >hex</label
-        >
-        <input
-          value={hex}
-          on:input={(e) => handleHexChange(e)}
-          type="text"
-          name="hex"
-          id="hex"
-          autocomplete="off"
-          spellcheck="false"
-          class="block w-full border-0 bg-transparent p-0 py-1 text-2xl text-slate-800 focus:ring-0 sm:text-4xl sm:text-slate-600"
-          placeholder="hex"
-        />
-        <div
-          class="absolute bottom-2 right-2 flex items-center justify-center p-2"
-        >
-          <CopyToClipboard valueToCopy={hex} />
-        </div>
-      </div>
-      <div
-        class="relative rounded-md rounded-t-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300"
-      >
-        <label for="rgb" class="block text-xs font-medium text-slate-600"
-          >rgb</label
-        >
-        <input
-          value={rgb}
-          on:input={(e) => handleRGBChange(e)}
-          type="text"
-          name="rgb"
-          id="rgb"
-          autocomplete="off"
-          spellcheck="false"
-          class="block w-full border-0 bg-transparent p-0 py-1 text-2xl text-slate-800 focus:ring-0 sm:text-4xl sm:text-slate-600"
-          placeholder="rgb"
-        />
-        <div
-          class="absolute bottom-2 right-2 flex items-center justify-center p-2"
-        >
-          <CopyToClipboard valueToCopy={rgb} />
-        </div>
-      </div>
+      <label class="sr-only" for="lorem-text">Lorem Ipsum</label>
+      <textarea
+        id="lorem-text"
+        name="lorem-text"
+        value={loremText}
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
+        rows={20}
+        cols={50}
+        class="block w-full rounded-md border-0 bg-white p-4 pt-12 focus:ring-0"
+      />
     </div>
   </div>
 </div>
