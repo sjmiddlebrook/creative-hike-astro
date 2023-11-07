@@ -1,5 +1,4 @@
 function generateLoremIpsumString(characters: number) {
-  // Lorem ipsum sentences for randomness
   const loremStarter = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
   const loremPool = [
     'Vivamus sagittis lacus vel augue laoreet rutrum faucibus.',
@@ -36,17 +35,17 @@ function generateLoremIpsumString(characters: number) {
     }
   }
 
-  // Generate random Lorem Ipsum text
-  function randomLoremIpsum(length: number): string {
-    shuffle(loremPool); // Randomize the order of sentences
-    let result = loremStarter + ' ' + loremPool.join(' '); // Start with all sentences joined
-    result = result.repeat(Math.ceil(length / result.length)); // Repeat to ensure enough length
 
-    // Truncate to the exact number of characters required
-    return result.substring(0, length);
+  let result = loremStarter;
+  while (result.length < characters) {
+    const randomIndex = Math.floor(Math.random() * loremPool.length);
+    result += ' ' + loremPool[randomIndex];
+    if (result.length >= characters) {
+      return result.slice(0, characters).trim();
+    }
   }
 
-  return randomLoremIpsum(characters);
+  return result.slice(0, characters).trim();
 }
 
 function splitTextIntoParagraphs(text: string, numberOfParagraphs: number): string[] {
@@ -54,25 +53,15 @@ function splitTextIntoParagraphs(text: string, numberOfParagraphs: number): stri
     return [text];
   }
   const sentences = text.match(/[^.!?]+[.!?]\s*/g) || [];
-  if (sentences.length < numberOfParagraphs) {
-    return [text];
-  }
 
   // Calculate approximate number of sentences per paragraph
   let paragraphs: string[] = new Array(numberOfParagraphs).fill('');
   let paragraphIndex = 0;
 
   // Distribute sentences among the paragraphs
-  sentences.forEach((sentence, index) => {
+  sentences.forEach((sentence) => {
     paragraphs[paragraphIndex] += sentence;
-    // Move to the next paragraph index if it's not the last one
-    if (paragraphIndex < numberOfParagraphs - 1) {
-      // Calculate if it's time to move to the next paragraph
-      const sentencesPerParagraph = Math.ceil((sentences.length - index) / (numberOfParagraphs - paragraphIndex));
-      if ((index + 1) % sentencesPerParagraph === 0) {
-        paragraphIndex++;
-      }
-    }
+    paragraphIndex = (paragraphIndex + 1) % numberOfParagraphs;
   });
 
   return paragraphs.filter(paragraph => paragraph.length > 0); // Filter out any empty paragraphs
