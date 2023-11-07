@@ -80,11 +80,11 @@
 </script>
 
 <div
-  class="flex h-full w-full items-center justify-center"
+  class="flex flex-col h-full w-full"
   style="background-color: {bgColor}"
 >
   {#if showLogo}
-    <a href="/" class="absolute left-6 top-6 flex items-center space-x-4">
+    <a href="/" class="p-6 flex">
       <span class="sr-only">Home</span>
       <svg
         class="h-10 rounded-full border"
@@ -112,7 +112,7 @@
     </a>
   {/if}
   <div
-    class="flex w-full max-w-xs flex-col space-y-6 placeholder-slate-800 sm:max-w-sm"
+    class={`flex flex-grow w-full flex-col items-center justify-center space-y-6 placeholder-slate-800 ${showLogo ? 'mb-24' : 'mb-0'}`}
   >
     {#if showColorPicker}
       <div class="flex items-center justify-center">

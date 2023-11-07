@@ -48,11 +48,11 @@
 </script>
 
 <div
-  class="flex h-full w-full items-center justify-center"
+  class="flex flex-col h-full w-full"
   style="background-color: {bgColor}"
 >
   {#if showLogo}
-    <a href="/" class="absolute left-6 top-6 flex items-center space-x-4">
+    <a href="/" class="p-6 flex">
       <span class="sr-only">Home</span>
       <svg
         class="h-10 rounded-full border"
@@ -80,7 +80,7 @@
     </a>
   {/if}
   <div
-    class="flex w-full flex-col items-center justify-center sm:items-start space-y-2 placeholder-slate-800 sm:flex-row sm:space-x-4 sm:space-y-0 md:space-x-6"
+    class={`flex w-full flex-col items-center justify-center sm:items-start space-y-2 placeholder-slate-800 sm:flex-row sm:space-x-4 sm:space-y-0 md:space-x-6 ${showLogo ? 'mb-24' : 'mb-0'}`}
   >
     <div
       class="isolate flex h-fit rounded-md bg-white shadow-sm min-w-[180px] sm:min-w-[120px] sm:flex-col sm:justify-center sm:-space-y-px"
@@ -122,10 +122,10 @@
       </div>
     </div>
     <div
-      class="relative mx-4 flex h-fit flex-col justify-center -space-y-px rounded-md bg-white text-slate-800 shadow-sm sm:mx-0"
+      class="relative mx-4 flex h-fit max-h-full flex-col justify-center rounded-md bg-white text-slate-800 shadow-sm sm:mx-0"
     >
       <div
-        class="absolute left-0 top-4 px-4 z-10 flex space-x-6 bg-white bg-opacity-90"
+        class="absolute left-0 top-0 w-full px-4 pt-4 pb-1 z-10 flex space-x-6 bg-white bg-opacity-90 rounded-md"
       >
         <button class="flex space-x-3" on:click={regenerateText}>
           <svg
@@ -155,7 +155,7 @@
         autocorrect="off"
         autocapitalize="off"
         spellcheck="false"
-        rows={20}
+        rows={15}
         cols={50}
         class="block w-full rounded-md border-0 bg-white p-4 pt-12 focus:ring-0"
       />
