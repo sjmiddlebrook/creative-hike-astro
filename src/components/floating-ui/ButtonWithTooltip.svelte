@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { remToPx } from '@utils/window/rem-to-px';
   import { offset, flip, shift } from '@floating-ui/dom';
   import { createFloatingActions, arrow } from '@actions/floating-ui';
   import { writable } from 'svelte/store';
@@ -7,9 +8,9 @@
   const [floatingRef, floatingContent] = createFloatingActions({
     placement: 'top',
     middleware: [
-      offset(6),
+      offset(remToPx(0.375)),
       flip(),
-      shift({ padding: 8 }),
+      shift({ padding: remToPx(0.5) }),
       arrow({ element: arrowRef }),
     ],
     onComputed({ placement, middlewareData }) {
@@ -42,7 +43,7 @@
 
 {#if showTooltip}
   <div
-    class="absolute w-max rounded-md bg-gray-800 p-1 text-sm font-semibold text-white"
+    class="absolute w-max px rounded-md bg-gray-800 p-1 text-sm font-semibold text-white"
     use:floatingContent
   >
     Tooltip content positioned

@@ -32,7 +32,6 @@ import ButtonWithTooltip from '@components/floating-ui/ButtonWithTooltip.svelte'
           top: `${y}px`,
         });
         const { x: arrowX, y: arrowY } = middlewareData.arrow ?? {};
-        console.log({ x, y, placement, arrowX, arrowY });
         const staticSide =
           {
             top: 'bottom',
@@ -76,7 +75,7 @@ import ButtonWithTooltip from '@components/floating-ui/ButtonWithTooltip.svelte'
 
 <Layout>
   <h1
-    class="text-3xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100"
+    class="text-3xl px font-bold tracking-tight text-zinc-800 dark:text-zinc-100"
   >
     Floating UI
   </h1>
