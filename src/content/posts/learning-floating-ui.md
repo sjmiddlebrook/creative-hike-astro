@@ -25,3 +25,5 @@ When developing a web application you are likely going to use UI components such
 **Offset**: gives the element some space from the reference element
 
 ## floating-ui with svelte
+
+With svelte there is a package [svelte-floating-ui](https://github.com/fedorovvvv/svelte-floating-ui) that helps to create the floating ui elements with actions and stores.
