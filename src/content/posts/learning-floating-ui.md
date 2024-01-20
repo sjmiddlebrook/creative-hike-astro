@@ -15,10 +15,12 @@ When developing a web application you are likely going to use UI components such
 ## Middleware
 
 **Flip**: places the element on the top or bottom depending on the position of the element on the screen
-- Flip ==> y-axis
+
+- Flip => y-axis
 
 **Shift**: places the element to the left or right depending on the content in the element and how much horizontal space there is
-- Shift ==> x-axis
+
+- Shift => x-axis
 
 **Offset**: gives the element some space from the reference element
 

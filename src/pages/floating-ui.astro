@@ -1,5 +1,6 @@
 ---
 import Layout from '@layouts/Layout.astro';
+import ButtonWithTooltip from '@components/floating-ui/ButtonWithTooltip.svelte';
 ---
 
 <script>
@@ -79,8 +80,17 @@ import Layout from '@layouts/Layout.astro';
   >
     Floating UI
   </h1>
+  <h2
+    class="mt-4 text-xl font-semibold tracking-tight text-zinc-800 dark:text-zinc-100"
+  >
+    With Scripts and Styles
+  </h2>
   <div id="container" class="relative h-56 w-56 overflow-scroll bg-zinc-100">
-    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">Scroll & Hover</div>
+    <div
+      class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform"
+    >
+      Scroll & Hover
+    </div>
     <div class="flex h-96 w-96 items-center justify-center bg-purple-200">
       <button
         id="button"
@@ -96,6 +106,21 @@ import Layout from '@layouts/Layout.astro';
       </div>
     </div>
   </div>
+  <h2
+    class="mt-4 text-xl font-semibold tracking-tight text-zinc-800 dark:text-zinc-100"
+  >
+    Button From Svelte
+  </h2>
+  <div id="container" class="relative h-56 w-56 overflow-scroll bg-zinc-100">
+    <div
+      class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform"
+    >
+      Scroll & Hover
+    </div>
+    <div class="flex h-96 w-96 items-center justify-center bg-purple-200">
+      <ButtonWithTooltip client:load />
+    </div>
+  </div>
 </Layout>
 
 <style>
@@ -107,10 +132,11 @@ import Layout from '@layouts/Layout.astro';
     left: 0;
     background: #222;
     color: white;
-    font-weight: bold;
-    padding: 5px;
+    font-weight: 600;
+    padding: 4px;
     border-radius: 4px;
-    font-size: 90%;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
   }
   #arrow {
     position: absolute;
