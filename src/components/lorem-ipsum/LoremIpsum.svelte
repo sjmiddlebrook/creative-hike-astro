@@ -134,7 +134,7 @@
             viewBox="0 0 24 24"
             stroke-width="1.5"
             stroke="currentColor"
-            class="h-6 w-6"
+            class="h-auto w-5 text-slate-500 sm:w-6"
           >
             <path
               stroke-linecap="round"
