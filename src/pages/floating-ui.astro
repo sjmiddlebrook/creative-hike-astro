@@ -1,0 +1,134 @@
+---
+import Layout from '@layouts/Layout.astro';
+---
+
+<script>
+  import {
+    computePosition,
+    flip,
+    shift,
+    offset,
+    arrow,
+  } from '@floating-ui/dom';
+
+  const button = document.querySelector('#button');
+  const tooltip = document.querySelector('#tooltip') as HTMLElement;
+  const arrowElement = document.querySelector('#arrow') as HTMLElement;
+
+  function update() {
+    if (button && tooltip && arrowElement) {
+      computePosition(button, tooltip, {
+        placement: 'top',
+        middleware: [
+          offset(6),
+          flip(),
+          shift({ padding: 8 }),
+          arrow({ element: arrowElement }),
+        ],
+      }).then(({ x, y, placement, middlewareData }) => {
+        Object.assign(tooltip.style, {
+          left: `${x}px`,
+          top: `${y}px`,
+        });
+        const { x: arrowX, y: arrowY } = middlewareData.arrow ?? {};
+        console.log({ x, y, placement, arrowX, arrowY });
+        const staticSide =
+          {
+            top: 'bottom',
+            right: 'left',
+            bottom: 'top',
+            left: 'right',
+          }[placement.split('-')[0]] ?? '';
+
+        Object.assign(arrowElement.style, {
+          left: arrowX != null ? `${arrowX}px` : '',
+          top: arrowY != null ? `${arrowY}px` : '',
+          right: '',
+          bottom: '',
+          [staticSide]: '-4px',
+        });
+      });
+    }
+  }
+
+  function showTooltip() {
+    tooltip.style.display = 'block';
+    update();
+  }
+
+  function hideTooltip() {
+    tooltip.style.display = '';
+  }
+
+  [
+    ['mouseenter', showTooltip],
+    ['mouseleave', hideTooltip],
+    ['focus', showTooltip],
+    ['blur', hideTooltip],
+  ].forEach(([event, listener]) => {
+    const elementEvent = event as keyof ElementEventMap;
+    if (button) {
+      button.addEventListener(elementEvent, listener);
+    }
+  });
+</script>
+
+<Layout>
+  <h1
+    class="text-3xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100"
+  >
+    Floating UI
+  </h1>
+  <div id="container" class="relative h-56 w-56 overflow-scroll bg-zinc-100">
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">Scroll & Hover</div>
+    <div class="flex h-96 w-96 items-center justify-center bg-purple-200">
+      <button
+        id="button"
+        aria-describedby="tooltip"
+        type="button"
+        class="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+        >Show</button
+      >
+
+      <div id="tooltip" role="tooltip">
+        Tooltip content positioned
+        <div id="arrow"></div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  #tooltip {
+    display: none;
+    width: max-content;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #222;
+    color: white;
+    font-weight: bold;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 90%;
+  }
+  #arrow {
+    position: absolute;
+    background: #222;
+    width: 8px;
+    height: 8px;
+    transform: rotate(45deg);
+  }
+
+  #container::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 8px;
+    height: 8px;
+  }
+
+  #container::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+  }
+</style>
