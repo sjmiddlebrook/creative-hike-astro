@@ -18,5 +18,8 @@ export default defineConfig({
   trailingSlash: 'never',
   build: {
     format: 'file',
+    rollupOptions: {
+      external: ['sharp'],
+    },
   },
 });
