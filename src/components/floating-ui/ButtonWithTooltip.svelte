@@ -1,55 +1,28 @@
 <script lang="ts">
-  import { remToPx } from '@utils/window/rem-to-px';
-  import { offset, flip, shift } from '@floating-ui/dom';
-  import { createFloatingActions, arrow } from '@actions/floating-ui';
-  import { writable } from 'svelte/store';
+  import { createFloating } from './action';
 
-  let arrowRef = writable<HTMLElement | null>(null);
-  const [floatingRef, floatingContent] = createFloatingActions({
-    placement: 'top',
-    middleware: [
-      offset(remToPx(0.375)),
-      flip(),
-      shift({ padding: remToPx(0.5) }),
-      arrow({ element: arrowRef }),
-    ],
-    onComputed({ placement, middlewareData }) {
-      if (!$arrowRef) return;
-      const { x, y } = middlewareData.arrow ?? {};
-      const staticSide =
-        {
-          top: 'bottom',
-          right: 'left',
-          bottom: 'top',
-          left: 'right',
-        }[placement.split('-')[0]] ?? '';
-      Object.assign($arrowRef.style, {
-        left: x != null ? `${x}px` : '',
-        top: y != null ? `${y}px` : '',
-        [staticSide]: '-4px',
-      });
-    },
-  });
-
-  let showTooltip: boolean = false;
+  let open = false;
+  const { arrowElement, referenceElement, floating } = createFloating();
 </script>
 
 <button
   class="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-  on:mouseenter={() => (showTooltip = true)}
-  on:mouseleave={() => (showTooltip = false)}
-  use:floatingRef>Show</button
+  on:mouseenter={() => (open = true)}
+  on:mouseleave={() => (open = false)}
+  bind:this={$referenceElement}
 >
+  Show
+</button>
 
-{#if showTooltip}
+{#if open}
   <div
-    class="absolute w-max px rounded-md bg-gray-800 p-1 text-sm font-semibold text-white"
-    use:floatingContent
+    class="px absolute w-max rounded-md bg-gray-800 p-1 text-sm font-semibold text-white"
+    use:floating
   >
     Tooltip content positioned
     <div
+      bind:this={$arrowElement}
       class="absolute h-2 w-2 rotate-45 transform bg-gray-800"
-      bind:this={$arrowRef}
     />
   </div>
 {/if}
