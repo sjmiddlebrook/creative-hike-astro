@@ -23,6 +23,7 @@
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
     "astro": "^4.2.1",
+    "d3": "^7.9.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "satori": "^0.10.11",
@@ -32,6 +33,10 @@
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",
+    "@types/d3-array": "^3.2.1",
+    "@types/d3-contour": "^3.0.6",
+    "@types/d3-geo": "^3.1.0",
+    "@types/d3-selection": "^3.0.10",
     "prettier": "^3.2.4",
     "prettier-plugin-astro": "^0.13.0",
     "prettier-plugin-svelte": "^3.1.2",
